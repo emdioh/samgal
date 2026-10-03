@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920, height=1080">
+  <title>SamGal</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="stage">
+    <img id="a" class="slide" alt="">
+    <img id="b" class="slide" alt="">
+    <div id="caption"></div>
+  </div>
+
+  <div id="menu" class="hidden">
+    <h1>SamGal</h1>
+    <label>Immich URL
+      <input id="url" type="url" placeholder="http://192.168.1.10:2283">
+    </label>
+    <label>API key
+      <input id="key" type="text" placeholder="Immich API key">
+    </label>
+    <label>Source
+      <select id="album"><option value="">All photos (random)</option></select>
+    </label>
+    <label>Seconds per photo
+      <input id="interval" type="number" min="3" max="300" value="10">
+    </label>
+    <div class="row">
+      <button id="load">Load albums</button>
+      <button id="save">Save &amp; start</button>
+    </div>
+    <p id="status"></p>
+    <p class="hint">OK = pause / menu &middot; Left/Right = prev/next &middot; Back = exit</p>
+  </div>
+
+  <script src="$WEBAPIS/webapis/webapis.js"></script>
+  <script src="js/sources/immich.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
