@@ -99,6 +99,14 @@
   document.addEventListener('keydown', function (e) {
     if (menuOpen()) {
       if (e.keyCode === KEYS.BACK) { if (photos.length) { hideMenu(); schedule(); } else exitApp(); }
+      else if (e.keyCode === KEYS.UP || e.keyCode === KEYS.DOWN) {
+        // Tizen has no spatial navigation inside focused inputs, so move focus by hand.
+        var items = Array.prototype.slice.call($('menu').querySelectorAll('input, select, button'));
+        var i = items.indexOf(document.activeElement);
+        var next = items[Math.max(0, Math.min(items.length - 1, i + (e.keyCode === KEYS.DOWN ? 1 : -1)))];
+        if (next) next.focus();
+        e.preventDefault();
+      }
       return; // let the focused control handle everything else
     }
     switch (e.keyCode) {
