@@ -8,7 +8,12 @@ function ImmichSource(baseUrl, apiKey) {
   function request(path, opts) {
     opts = opts || {};
     opts.headers = Object.assign({ 'x-api-key': apiKey, Accept: 'application/json' }, opts.headers);
-    return fetch(base + path, opts).then(function (r) {
+    return fetch(base + path, opts).catch(function () {
+      // fetch() only rejects on network/CORS/mixed-content failures, never on HTTP status
+      var mixed = location.protocol === 'https:' && base.indexOf('http:') === 0;
+      throw new Error('cannot reach ' + base + path + ' from ' + location.origin +
+        (mixed ? ' (blocked: https page cannot call http server)' : ' (network or CORS)'));
+    }).then(function (r) {
       if (!r.ok) throw new Error('Immich ' + r.status + ' on ' + path);
       return r;
     });
