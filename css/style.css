@@ -17,3 +17,14 @@ input:focus, select:focus, button:focus { border-color: #4da3ff; outline: none; 
 .row { display: flex; gap: 20px; }
 #status { font-size: 24px; min-height: 30px; color: #ffd166; }
 .hint { font-size: 22px; opacity: .6; }
+#diagpage { position: fixed; inset: 0; background: #000; padding: 50px 100px; box-sizing: border-box;
+  display: flex; flex-direction: column; gap: 14px; z-index: 10; overflow: hidden; }
+#diagpage.hidden { display: none; }
+#diagpage h1 { font-size: 44px; margin: 0; }
+#diagrows { flex: 1; overflow: hidden; display: flex; flex-direction: column; gap: 10px; }
+.drow { font-size: 22px; line-height: 1.25; word-break: break-all; }
+.drow b { display: block; font-size: 24px; }
+.drow.pass b { color: #6fdc8c; }
+.drow.fail b { color: #ff6b6b; }
+.drow.info { opacity: .75; }
+#diagclose { align-self: flex-start; }

@@ -42,6 +42,29 @@
     }).catch(function (e) { status('Failed: ' + e.message); });
   }
 
+  // ---- diagnostics ----
+  function diagOpen() { return !$('diagpage').classList.contains('hidden'); }
+  function closeDiag() { $('diagpage').classList.add('hidden'); $('diag').focus(); }
+  function runDiag() {
+    var box = $('diagrows');
+    box.innerHTML = '';
+    $('diagpage').classList.remove('hidden');
+    $('diagclose').focus();
+    runDiagnostics($('url').value.trim(), $('key').value.trim(), function (r) {
+      var d = document.createElement('div');
+      d.className = 'drow ' + r.state;
+      var n = document.createElement('b');
+      n.textContent = (r.state === 'pass' ? 'PASS ' : r.state === 'fail' ? 'FAIL ' : '') + r.name;
+      var t = document.createElement('span');
+      t.textContent = r.detail;
+      d.appendChild(n); d.appendChild(t);
+      box.appendChild(d);
+    }).then(function () {
+      var d = document.createElement('div'); d.className = 'drow info'; d.textContent = 'Done.';
+      box.appendChild(d);
+    });
+  }
+
   function saveAndStart() {
     cfg = {
       url: $('url').value.trim(), key: $('key').value.trim(),
@@ -97,6 +120,10 @@
   }
 
   document.addEventListener('keydown', function (e) {
+    if (diagOpen()) {
+      if (e.keyCode === KEYS.BACK) closeDiag();
+      return;
+    }
     if (menuOpen()) {
       if (e.keyCode === KEYS.BACK) { if (photos.length) { hideMenu(); schedule(); } else exitApp(); }
       else if (e.keyCode === KEYS.UP || e.keyCode === KEYS.DOWN) {
@@ -121,6 +148,8 @@
 
   $('load').onclick = loadAlbums;
   $('save').onclick = saveAndStart;
+  $('diag').onclick = runDiag;
+  $('diagclose').onclick = closeDiag;
 
   // Register remote keys and keep the screen awake while running.
   try {
