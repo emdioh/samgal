@@ -2,50 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=1920, height=1080">
-  <title>SamGal</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>SamGal diagnostics</title>
+  <style>
+    body { margin: 0; padding: 40px 60px; background: #000; color: #fff; font-family: sans-serif; }
+    h1 { font-size: 40px; margin: 0 0 6px; }
+    .drow { font-size: 22px; line-height: 1.3; margin: 8px 0; word-break: break-all; }
+    .drow b { display: block; font-size: 24px; }
+    .pass b { color: #6fdc8c; } .fail b { color: #ff6b6b; } .info { opacity: .8; }
+  </style>
 </head>
 <body>
-  <div id="stage">
-    <img id="a" class="slide" alt="">
-    <img id="b" class="slide" alt="">
-    <div id="caption"></div>
-  </div>
-
-  <div id="menu" class="hidden">
-    <h1>SamGal</h1>
-    <label>Immich URL
-      <input id="url" type="url" placeholder="http://192.168.1.10:2283">
-    </label>
-    <label>API key
-      <input id="key" type="text" placeholder="Immich API key">
-    </label>
-    <label>Source
-      <select id="album"><option value="">All photos (random)</option></select>
-    </label>
-    <label>Seconds per photo
-      <input id="interval" type="number" min="3" max="300" value="10">
-    </label>
-    <div class="row">
-      <button id="load">Load albums</button>
-      <button id="save">Save &amp; start</button>
-      <button id="diag">Diagnose</button>
-    </div>
-    <p id="status"></p>
-    <p class="hint">OK = pause / menu &middot; Left/Right = prev/next &middot; Back = exit</p>
-  </div>
-
-  <div id="diagpage" class="hidden">
-    <h1>Connection diagnostics</h1>
-    <div id="diagrows"></div>
-    <button id="diagclose">Close</button>
-    <p class="hint">Back = close &middot; OK on Close = return to menu</p>
-  </div>
-
-  <script src="$WEBAPIS/webapis/webapis.js"></script>
-  <script src="js/sources/immich.js"></script>
+  <h1>SamGal diagnostics (build 6)</h1>
+  <div id="rows">Starting…</div>
+  <div class="drow info">OK = run again</div>
   <script src="js/diagnose.js"></script>
-  <script src="js/app.js"></script>
+  <script>
+    var box = document.getElementById('rows');
+    function add(state, name, detail) {
+      var d = document.createElement('div'); d.className = 'drow ' + state;
+      var b = document.createElement('b'); b.textContent = (state === 'pass' ? 'PASS ' : state === 'fail' ? 'FAIL ' : '') + name;
+      var t = document.createElement('span'); t.textContent = detail || '';
+      d.appendChild(b); d.appendChild(t); box.appendChild(d);
+    }
+    window.onerror = function (msg, src, line) { add('fail', 'JS error', msg + ' @' + line); };
+    function run() {
+      box.innerHTML = '';
+      var cfg = {};
+      try { cfg = JSON.parse(localStorage.getItem('samgal') || '{}'); } catch (e) {}
+      var url = cfg.url || 'https://immich.lan.donde.ro';
+      runDiagnostics(url, cfg.key || '', function (r) { add(r.state, r.name, r.detail); })
+        .then(function () { add('info', 'Done.', cfg.key ? '' : 'No saved API key: check 5 should give HTTP 401, which is fine.'); });
+    }
+    document.addEventListener('keydown', function (e) { if (e.keyCode === 13) run(); });
+    run();
+  </script>
 </body>
 </html>
