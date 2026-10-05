@@ -44,10 +44,15 @@
 
   // ---- diagnostics ----
   function diagOpen() { return !$('diagpage').classList.contains('hidden'); }
-  function closeDiag() { $('diagpage').classList.add('hidden'); $('diag').focus(); }
+  function closeDiag() {
+    $('diagpage').classList.add('hidden');
+    $('menu').style.display = '';
+    $('diag').focus();
+  }
   function runDiag() {
     var box = $('diagrows');
     box.innerHTML = '';
+    $('menu').style.display = 'none'; // z-index stacking is unreliable on some Tizen engines
     $('diagpage').classList.remove('hidden');
     $('diagclose').focus();
     runDiagnostics($('url').value.trim(), $('key').value.trim(), function (r) {
