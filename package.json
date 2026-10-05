@@ -1,6 +1,6 @@
 {
   "name": "samgal",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Immich photo slideshow for Samsung TVs",
   "license": "MIT",
   "packageType": "app",
